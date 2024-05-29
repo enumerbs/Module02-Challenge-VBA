@@ -94,7 +94,7 @@ Sub OutputCurrentStockSummary(outputRow As Long, startOutputCol As Long, _
     ' Output the Stock Ticker
     Cells(outputRow, startOutputCol).Value = currStockTicker
     
-    ' Output the Stock quarterly change, including number format 0.00 and conditional formatting
+    ' Output the Stock quarterly change, including number format 0.00 and background colour conditional formatting
     Dim quarterlyChange As Double
     quarterlyChange = stockClose - stockOpen
     Cells(outputRow, startOutputCol + 1).Value = quarterlyChange
