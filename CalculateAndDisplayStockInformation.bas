@@ -1,9 +1,26 @@
 Attribute VB_Name = "Module1"
-' Declare constants for Stocks data column indexes
+' Data Analytics Boot Camp - Module 02 - VBA Scripting
+' VBA Challenge
+
+' ---------------------------------------------------------------------------------
+' Preamble: declare constants for Stocks data column indexes
+
 Public Const TICKER_COL As Integer = 1
 Public Const OPEN_COL As Integer = 3
 Public Const CLOSE_COL As Integer = 6
 Public Const VOL_COL As Integer = 7
+
+' ---------------------------------------------------------------------------------
+' Main subroutine: Display Stocks Information
+'
+' This routine iterates over the worksheets containing Stock information, and
+' ultimately autofits the columns containing summary information so it's visible.
+' Other subroutines are called to output summary headers (column names), to
+' calculate the statistics on each stock, and the 'greatest' stock information.
+'
+' Assumption: in order to match the sample result, the 'greatest' stock is
+' calculated on a per-worksheet (per-quarter) basis, not the 'greatest' overall.
+' ---------------------------------------------------------------------------------
 
 Sub DisplayStocksInformation()
     ' Declare variables used to describe the Stocks data range on each Worksheet
@@ -28,10 +45,18 @@ Sub DisplayStocksInformation()
         
         ' Add the summary information for each Stock on the current Worksheet
         DisplayWorksheetStocksSummary maxUsedRow, 2, maxDataCol + 2
+        
+        ' Autofit the rows containing individual and summary information to ensure all content is visible
+        Worksheets(wsIndex).Range("I:Q").EntireColumn.AutoFit
             
     Next wsIndex
     
 End Sub
+
+' ---------------------------------------------------------------------------------
+' Display Stocks Information Header
+'
+' Output the header for the individual stocks summary
 
 Sub DisplayStocksInformationHeader(usedCol As Long)
     ' Output the individual Stocks information header (column names)
@@ -41,11 +66,26 @@ Sub DisplayStocksInformationHeader(usedCol As Long)
     Cells(1, usedCol + 5).value = "Total Stock Volume"
 End Sub
 
+' ---------------------------------------------------------------------------------
+' Display Greatest Stocks Information Header
+'
+' Output the header for the 'greatest' stocks summary
+
 Sub DisplayGreatestStocksInformationHeader(usedCol As Long)
     ' Output the 'Greatest' Stocks information header (column names)
     Cells(1, usedCol + 9).value = "Ticker"
     Cells(1, usedCol + 10).value = "Value"
 End Sub
+
+' ---------------------------------------------------------------------------------
+' Display Worksheet Stocks Summary
+'
+' This is the main calculation routine that determins the individual stock statistics,
+' per worksheet; it also determines the 'greatest' stocks per worksheet.
+' Individual stock statistics are calculated/accumulated until a change in stock ticker
+' is detected (or the end of stock data on the worksheet), and which point totals and
+' other statistics for the stock are finalised before being output.
+' Separate routines are called to perform the display of per-stock and 'greatest' values.
 
 Sub DisplayWorksheetStocksSummary(maxDataRow As Long, startOutputRow As Long, startOutputCol As Long)
     ' Declare variables used to collate information or output information on individual Stocks
@@ -140,6 +180,10 @@ Sub DisplayWorksheetStocksSummary(maxDataRow As Long, startOutputRow As Long, st
     
 End Sub
 
+' ---------------------------------------------------------------------------------
+' Display & Format Output - individual Stock summary statistics
+' ---------------------------------------------------------------------------------
+
 Sub OutputCurrentStockSummary(outputRow As Long, startOutputCol As Long, _
                               currStockTicker As String, _
                               quarterlyChange As Double, percentageChange As Double, accumulatedStockVolume As Double)
@@ -150,7 +194,7 @@ Sub OutputCurrentStockSummary(outputRow As Long, startOutputCol As Long, _
     Cells(outputRow, startOutputCol + 1).value = quarterlyChange
     Cells(outputRow, startOutputCol + 1).NumberFormat = "0.00"
     If (quarterlyChange < 0) Then
-        ' Set cell backgroun red for negative quarterly change
+        ' Set cell background red for negative quarterly change
         Cells(outputRow, startOutputCol + 1).Interior.ColorIndex = 3
     ElseIf (quarterlyChange > 0) Then
         ' Set cell background green for positive quarterly change
@@ -167,6 +211,10 @@ Sub OutputCurrentStockSummary(outputRow As Long, startOutputCol As Long, _
     ' Output the Stock's accumulated Volume for the quarter
     Cells(outputRow, startOutputCol + 3).value = accumulatedStockVolume
 End Sub
+
+' ---------------------------------------------------------------------------------
+' Display & Format Output - 'greatest' Stock summary statistics
+' ---------------------------------------------------------------------------------
 
 Sub OutputGreatestPercentageIncrease(ticker As String, value As Double, startOutputGreatestCol As Integer)
     Cells(2, startOutputGreatestCol - 1).value = "Greatest % Increase"
@@ -187,6 +235,8 @@ Sub OutputGreatestTotalVolume(ticker As String, value As Double, startOutputGrea
     Cells(4, startOutputGreatestCol + 0).value = ticker
     Cells(4, startOutputGreatestCol + 1).value = value
 End Sub
+
+' ---------------------------------------------------------------------------------
 
 
 
