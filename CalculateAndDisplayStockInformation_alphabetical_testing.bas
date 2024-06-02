@@ -28,6 +28,9 @@ Sub DisplayStocksInformation()
         
         ' Add the summary information for each Stock on the current Worksheet
         DisplayWorksheetStocksSummary maxUsedRow, 2, maxDataCol + 2
+        
+        ' Autofit the rows containing individual and summary information to ensure all content is visible
+        Worksheets(wsIndex).Range("I:Q").EntireColumn.AutoFit
             
     Next wsIndex
     
